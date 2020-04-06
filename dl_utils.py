@@ -9,6 +9,8 @@ from skimage.io import imread, imshow
 from skimage.color import rgb2gray
 from skimage.transform import resize
 
+from image_utils import combine_channels
+
 class AverageMeter(object):
     '''A handy class from the PyTorch ImageNet tutorial''' 
     def __init__(self):
@@ -91,7 +93,7 @@ def show_model_results(model, model_name, model_version, path, img_size, device)
     ax[1].axis('off')
     ax[1].set_title('Grayscale')
 
-    imshow(result, ax=ax[2])
+    imshow(color_output, ax=ax[2])
     ax[2].axis('off')
     ax[2].set_title(model_name)
 

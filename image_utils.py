@@ -75,17 +75,19 @@ def preview_dataloader_lab(data_loader):
 def combine_channels(gray_input, ab_input, model_version):
     
     if gray_input.is_cuda: gray_input = gray_input.cpu()
-    if ab_input.is_cuda: ab_input = gray_input.cpu()
+    if ab_input.is_cuda: ab_input = ab_input.cpu()
     
     # combine channels
     color_image = torch.cat((gray_input, ab_input), 0).numpy()
     color_image = color_image.transpose((1, 2, 0))  # rescale for matplotlib
     # reverse the transformation from DataLoaders
     if model_version == 1:
-        color_image[:, :, 0:1] = color_image[:, :, 0:1] * 100
-        color_image[:, :, 1:3] = color_image[:, :, 1:3] * 128 
+        color_image = color_image * [100, 128, 128]
+#         color_image[:, :, 0:1] = color_image[:, :, 0:1] * 100
+#         color_image[:, :, 1:3] = color_image[:, :, 1:3] * 128 
     # prepare the grayscale/RGB imagers
-    color_output = lab2rgb(color_image.astype(np.float64))
+    color_output = lab2rgb(color_image.astype(
+        np.float64))
     gray_output = gray_input.squeeze().numpy()
     
     return gray_output, color_output
