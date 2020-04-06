@@ -28,3 +28,10 @@ def move_random_files(from_dir, to_dir, file_format, perc=0.1):
     
     print(f'done.')
     
+def get_random_file(from_dir, file_format):
+    
+    assert os.path.isdir(from_dir), 'Source directory does not exist!'
+    
+    file_list = glob.glob(f'{from_dir}/*.{file_format}')
+    return random.sample(file_list, 1)[0]
+    

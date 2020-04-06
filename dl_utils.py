@@ -3,6 +3,11 @@ import os
 import random
 import torch
 import matplotlib.pyplot as plt
+import shutil
+
+from skimage.io import imread, imshow
+from skimage.color import rgb2gray
+from skimage.transform import resize
 
 class AverageMeter(object):
     '''A handy class from the PyTorch ImageNet tutorial''' 
@@ -46,3 +51,48 @@ def plot_losses(train_losses, valid_losses):
     fig.show()
     
     plt.style.use('default')
+
+def save_checkpoint(state, is_best=False, filename='checkpoint.pth.tar', path=None):
+    
+    if path:
+        if not os.path.isdir(path):
+            os.makedirs(path)
+    else:
+        path = ''
+        
+    filename = os.path.join(path, filename)
+        
+    torch.save(state, filename)
+    
+    if is_best:
+        best_path = os.path.join(path, 'model_best.pth.tar')
+        shutil.copyfile(filename, best_path)
+        
+def show_model_results(model, model_name, model_version, path, img_size, device):
+    
+    test_image = imread(path)
+    test_image = resize(test_image, (img_size, img_size))
+    test_image_gray = rgb2gray(test_image)
+    
+    gray_tensor = torch.from_numpy(test_image_gray).unsqueeze(0).unsqueeze(0).float().to(device)
+    
+    with torch.no_grad():
+        ab_tensor = model(gray_tensor)
+        
+    gray_output, color_output = combine_channels(gray_tensor[0], ab_tensor[0], model_version)
+        
+    fig, ax = plt.subplots(1, 3, figsize = (12, 15))
+
+    imshow(test_image, ax=ax[0]) 
+    ax[0].axis('off')
+    ax[0].set_title('RGB')
+
+    imshow(test_image_gray, ax=ax[1])
+    ax[1].axis('off')
+    ax[1].set_title('Grayscale')
+
+    imshow(result, ax=ax[2])
+    ax[2].axis('off')
+    ax[2].set_title(model_name)
+
+    fig.show()

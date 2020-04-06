@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 
 from skimage.color import rgb2lab, rgb2gray, lab2rgb
 from skimage.io import imread, imshow
@@ -47,3 +48,44 @@ def preview_lab_image(path, is_path=True):
 
     plt.show()
         
+def preview_dataloader_lab(data_loader):
+
+    # obtain one batch of training images
+    data_iter = iter(data_loader)
+    img_gray, img_ab, target = data_iter.next()
+
+    # preview first 3 images in the batch
+    fig, ax = plt.subplots(3, 3, figsize = (12, 15))
+
+    for i in range(0, 3):
+        imshow(img_gray[i][0].numpy(), ax=ax[i][0]) 
+        ax[i][0].axis('off')
+        ax[i][0].set_title('L')
+
+        ax[i][1].imshow(img_ab[i][0].numpy(), cmap='RdYlGn_r') 
+        ax[i][1].axis('off')
+        ax[i][1].set_title('a')
+
+        ax[i][2].imshow(img_ab[i][1].numpy(), cmap='YlGnBu_r') 
+        ax[i][2].axis('off')
+        ax[i][2].set_title('b');
+        
+    return img_gray, img_ab
+
+def combine_channels(gray_input, ab_input, model_version):
+    
+    if gray_input.is_cuda: gray_input = gray_input.cpu()
+    if ab_input.is_cuda: ab_input = gray_input.cpu()
+    
+    # combine channels
+    color_image = torch.cat((gray_input, ab_input), 0).numpy()
+    color_image = color_image.transpose((1, 2, 0))  # rescale for matplotlib
+    # reverse the transformation from DataLoaders
+    if model_version == 1:
+        color_image[:, :, 0:1] = color_image[:, :, 0:1] * 100
+        color_image[:, :, 1:3] = color_image[:, :, 1:3] * 128 
+    # prepare the grayscale/RGB imagers
+    color_output = lab2rgb(color_image.astype(np.float64))
+    gray_output = gray_input.squeeze().numpy()
+    
+    return gray_output, color_output
