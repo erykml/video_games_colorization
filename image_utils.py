@@ -80,11 +80,15 @@ def combine_channels(gray_input, ab_input, model_version):
     # combine channels
     color_image = torch.cat((gray_input, ab_input), 0).numpy()
     color_image = color_image.transpose((1, 2, 0))  # rescale for matplotlib
+    
     # reverse the transformation from DataLoaders
     if model_version == 1:
         color_image = color_image * [100, 128, 128]
-#         color_image[:, :, 0:1] = color_image[:, :, 0:1] * 100
-#         color_image[:, :, 1:3] = color_image[:, :, 1:3] * 128 
+    elif model_version == 2:
+        color_image = color_image * [100, 255, 255] - [0, 128, 128]
+    else:
+        raise ValueError('Incorrect model version!!!')
+    
     # prepare the grayscale/RGB imagers
     color_output = lab2rgb(color_image.astype(
         np.float64))
