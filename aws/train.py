@@ -13,7 +13,7 @@ import torch.optim as optim
 import torch.utils.data
 
 from dl_utils import *
-from train import *
+from train_utils import *
 
 # import model
 from model import ColorCNN
@@ -99,9 +99,7 @@ if __name__ == '__main__':
     print_every = 1
     
     # set the seed for generating random numbers
-    torch.manual_seed(args.seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed(args.seed)
+    custom_set_seed(42)
         
     # get train loader
     train_loader, valid_loader = _get_train_loader(args.batch_size, args.data_dir) # data_dir from above..
@@ -114,6 +112,8 @@ if __name__ == '__main__':
     model = ColorCNN().to(device)
     criterion = nn.MSELoss()
     optimizer = torch.optim.RMSprop(model.parameters(), lr=args.lr)
+    
+    print('Starting training...')
 
     # Train model
     for epoch in range(0, args.epochs):
