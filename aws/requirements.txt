@@ -1,3 +1,0 @@
-pytube3
-opencv-python
-scikit-image==0.16.2
