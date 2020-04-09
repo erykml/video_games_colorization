@@ -11,6 +11,8 @@ from skimage.transform import resize
 
 from image_utils import combine_channels
 
+import torch.nn as nn
+
 class AverageMeter(object):
     '''A handy class from the PyTorch ImageNet tutorial''' 
     def __init__(self):
@@ -70,7 +72,7 @@ def save_checkpoint(state, is_best=False, filename='checkpoint.pth.tar', path=No
         best_path = os.path.join(path, 'model_best.pth.tar')
         shutil.copyfile(filename, best_path)
         
-def show_model_results(model, model_name, model_version, path, img_size, device):
+def show_model_results(model, model_name, lab_version, path, img_size, device):
     
     test_image = imread(path)
     test_image = resize(test_image, (img_size, img_size))
@@ -81,7 +83,7 @@ def show_model_results(model, model_name, model_version, path, img_size, device)
     with torch.no_grad():
         ab_tensor = model(gray_tensor)
         
-    gray_output, color_output = combine_channels(gray_tensor[0], ab_tensor[0], model_version)
+    gray_output, color_output = combine_channels(gray_tensor[0], ab_tensor[0], lab_version)
         
     fig, ax = plt.subplots(1, 3, figsize = (12, 15))
 
@@ -98,3 +100,14 @@ def show_model_results(model, model_name, model_version, path, img_size, device)
     ax[2].set_title(model_name)
 
     fig.show()
+    
+class Upsample(nn.Module):
+    def __init__(self, scale_factor, mode):
+        super(Upsample, self).__init__()
+        self.interp = nn.functional.interpolate
+        self.scale_factor = scale_factor
+        self.mode = mode
+        
+    def forward(self, x):
+        x = self.interp(x, scale_factor=self.scale_factor, mode=self.mode)
+        return x

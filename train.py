@@ -69,3 +69,21 @@ def validate(valid_loader, model, criterion, save_images, gray_path, color_path,
     epoch_loss = running_loss / len(valid_loader.dataset)
         
     return epoch_loss
+
+def validate_short(valid_loader, model, criterion, device):
+    model.eval()
+    running_loss = 0
+    
+    for i, (input_gray, input_ab, target) in enumerate(valid_loader):
+    
+        input_gray = input_gray.to(device)
+        input_ab = input_ab.to(device)
+
+        # Forward pass and record loss
+        output_ab = model(input_gray)
+        loss = criterion(output_ab, input_ab)
+        running_loss += loss.item() * input_gray.size(0)
+
+    epoch_loss = running_loss / len(valid_loader.dataset)
+        
+    return epoch_loss

@@ -72,7 +72,7 @@ def preview_dataloader_lab(data_loader):
         
     return img_gray, img_ab
 
-def combine_channels(gray_input, ab_input, model_version):
+def combine_channels(gray_input, ab_input, lab_version):
     
     if gray_input.is_cuda: gray_input = gray_input.cpu()
     if ab_input.is_cuda: ab_input = ab_input.cpu()
@@ -82,12 +82,12 @@ def combine_channels(gray_input, ab_input, model_version):
     color_image = color_image.transpose((1, 2, 0))  # rescale for matplotlib
     
     # reverse the transformation from DataLoaders
-    if model_version == 1:
+    if lab_version == 1:
         color_image = color_image * [100, 128, 128]
-    elif model_version == 2:
+    elif lab_version == 2:
         color_image = color_image * [100, 255, 255] - [0, 128, 128]
     else:
-        raise ValueError('Incorrect model version!!!')
+        raise ValueError('Incorrect Lab version!!!')
     
     # prepare the grayscale/RGB imagers
     color_output = lab2rgb(color_image.astype(
