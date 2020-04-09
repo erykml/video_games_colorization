@@ -21,7 +21,7 @@ class ColorizationImageFolder(datasets.ImageFolder):
             img_original = np.asarray(img_original)
             
             # convert to lab
-            img_lab = rgb2lab(img_original)
+            img_lab = rgb2lab(img_original / 255.0)
             
             if self.model_version == 1:
                 # output is in range [1,1] -> tanh activation
