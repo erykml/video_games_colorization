@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from image_utils import combine_channels
 
-def save_temp_results(gray_input, ab_input, model_version, save_path=None, save_name=None):
+def save_temp_results(gray_input, ab_input, lab_version, save_path=None, save_name=None):
     '''
     Show/save rgb image from grayscale and ab channels
     Input save_path in the form {'grayscale': '/path/', 'colorized': '/path/'}
@@ -9,7 +9,7 @@ def save_temp_results(gray_input, ab_input, model_version, save_path=None, save_
     
     plt.clf() # clear matplotlib 
     
-    gray_output, color_output = combine_channels(gray_input, ab_input, model_version)
+    gray_output, color_output = combine_channels(gray_input, ab_input, lab_version)
     
     if save_path is not None and save_name is not None: 
         plt.imsave(arr=gray_output, fname='{}{}'.format(save_path['grayscale'], save_name), cmap='gray')
@@ -38,7 +38,7 @@ def train(train_loader, model, criterion, optimizer, device):
     epoch_loss = running_loss / len(train_loader.dataset)
     return epoch_loss
 
-def validate(valid_loader, model, criterion, save_images, gray_path, color_path, device, epoch, model_version):
+def validate(valid_loader, model, criterion, save_images, gray_path, color_path, device, epoch, lab_version):
     model.eval()
     running_loss = 0
     already_saved_images = False
@@ -62,7 +62,7 @@ def validate(valid_loader, model, criterion, save_images, gray_path, color_path,
                 save_name = f'img-{i * valid_loader.batch_size + j}-epoch-{epoch}.jpg'
                 save_temp_results(input_gray[j], 
                                   ab_input=output_ab[j].detach(), 
-                                  model_version=model_version,
+                                  lab_version=lab_version,
                                   save_path=save_path, 
                                   save_name=save_name)
 

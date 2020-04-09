@@ -8,8 +8,8 @@ from skimage.color import rgb2lab, lab2rgb
 class ColorizationImageFolder(datasets.ImageFolder):
     '''Custom images folder, which converts images to grayscale before loading'''
     
-    def __init__(self, model_version, **kw):
-        self.model_version=model_version
+    def __init__(self, lab_version, **kw):
+        self.lab_version=lab_version
         super(ColorizationImageFolder, self).__init__(**kw)
                 
     def __getitem__(self, index):
@@ -23,14 +23,14 @@ class ColorizationImageFolder(datasets.ImageFolder):
             # convert to lab
             img_lab = rgb2lab(img_original / 255.0)
             
-            if self.model_version == 1:
+            if self.lab_version == 1:
                 # output is in range [1,1] -> tanh activation
                 img_lab = (img_lab + [0, 0, 0]) / [100, 128, 128] 
-            elif self.model_version == 2:
+            elif self.lab_version == 2:
                 # output is in range [0,1]
                 img_lab = (img_lab + [0, 128, 128]) / [100, 255, 255]
             else:
-                raise ValueError('Incorrect model version!!!')
+                raise ValueError('Incorrect Lab version!!!')
                 
             img_ab = img_lab[:,:,1:3]
             img_ab = torch.from_numpy(img_ab.transpose((2, 0, 1))).float()

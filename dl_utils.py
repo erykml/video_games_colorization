@@ -70,7 +70,7 @@ def save_checkpoint(state, is_best=False, filename='checkpoint.pth.tar', path=No
         best_path = os.path.join(path, 'model_best.pth.tar')
         shutil.copyfile(filename, best_path)
         
-def show_model_results(model, model_name, model_version, path, img_size, device):
+def show_model_results(model, model_name, lab_version, path, img_size, device):
     
     test_image = imread(path)
     test_image = resize(test_image, (img_size, img_size))
@@ -81,7 +81,7 @@ def show_model_results(model, model_name, model_version, path, img_size, device)
     with torch.no_grad():
         ab_tensor = model(gray_tensor)
         
-    gray_output, color_output = combine_channels(gray_tensor[0], ab_tensor[0], model_version)
+    gray_output, color_output = combine_channels(gray_tensor[0], ab_tensor[0], lab_version)
         
     fig, ax = plt.subplots(1, 3, figsize = (12, 15))
 
