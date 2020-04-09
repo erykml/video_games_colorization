@@ -11,6 +11,8 @@ from skimage.transform import resize
 
 from image_utils import combine_channels
 
+import torch.nn as nn
+
 class AverageMeter(object):
     '''A handy class from the PyTorch ImageNet tutorial''' 
     def __init__(self):
@@ -98,3 +100,14 @@ def show_model_results(model, model_name, lab_version, path, img_size, device):
     ax[2].set_title(model_name)
 
     fig.show()
+    
+class Upsample(nn.Module):
+    def __init__(self, scale_factor, mode):
+        super(Upsample, self).__init__()
+        self.interp = nn.functional.interpolate
+        self.scale_factor = scale_factor
+        self.mode = mode
+        
+    def forward(self, x):
+        x = self.interp(x, scale_factor=self.scale_factor, mode=self.mode)
+        return x
