@@ -44,7 +44,7 @@ def model_fn(model_dir):
     return model.to(device)    
     
 def _get_train_loader(img_size, batch_size, lab_version, data_dir):
-    print("Get data loader.")
+    print("Getting the data loaders...")
     
     # define transformations
     train_transforms = transforms.Compose([
@@ -71,18 +71,12 @@ def _get_train_loader(img_size, batch_size, lab_version, data_dir):
     valid_loader = torch.utils.data.DataLoader(valid_folder, 
                                                batch_size=batch_size, 
                                                shuffle=False)
+    
+    print('Done!')
 
     return train_loader, valid_loader    
 
-
-# Provided model saving functions
-def save_model(model, model_dir, name=''):
-    print("Saving the model.")
-    path = os.path.join(model_dir, 'model.pth')
-    # save state dictionary
-    torch.save(model.cpu().state_dict(), path)
     
-
 if __name__ == '__main__':
     # All of the model parameters and training parameters are sent as arguments
     # when this script is executed, during a training job
@@ -163,6 +157,7 @@ if __name__ == '__main__':
         if valid_loss < best_loss:
             best_loss = valid_loss
             save_checkpoint(checkpoint, is_best=True, path=args.model_dir)
+            print(f'Saved best checkpoint after epoch {epoch}')
 
         end_time = time.time()
         epoch_time = end_time - start_time
@@ -176,6 +171,6 @@ if __name__ == '__main__':
                   f'Epoch time: {epoch_time:.2f} (avg. {time_meter.avg:.2f})')
             
     # save trained model, after all epochs
-    save_checkpoint(model, filename='model_last_epoch.pth.tar', path=args.model_dir)
+    save_checkpoint(checkpoint, filename='model_last_epoch.pth.tar', path=args.model_dir)
         
     
