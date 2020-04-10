@@ -21,27 +21,27 @@ from models import ColorCNN_v0
 from torchvision import datasets, transforms
 from dataloaders import ColorizationImageFolder
 
-def model_fn(model_dir):
-    print("Loading model.")
+# def model_fn(model_dir):
+#     print("Loading model.")
 
-    # First, load the parameters used to create the model.
-    model_info = {}
-    model_info_path = os.path.join(model_dir, 'model_info.pth')
-    with open(model_info_path, 'rb') as f:
-        model_info = torch.load(f)
+#     # First, load the parameters used to create the model.
+#     model_info = {}
+#     model_info_path = os.path.join(model_dir, 'model_info.pth')
+#     with open(model_info_path, 'rb') as f:
+#         model_info = torch.load(f)
 
-    print("model_info: {}".format(model_info))
+#     print("model_info: {}".format(model_info))
 
-    # Determine the device and construct the model.
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = ColorCNN_v0()
+#     # Determine the device and construct the model.
+#     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#     model = ColorCNN_v0()
 
-    # Load the stored model parameters.
-    model_path = os.path.join(model_dir, 'model.pth')
-    with open(model_path, 'rb') as f:
-        model.load_state_dict(torch.load(f))
+#     # Load the stored model parameters.
+#     model_path = os.path.join(model_dir, 'model.pth')
+#     with open(model_path, 'rb') as f:
+#         model.load_state_dict(torch.load(f))
     
-    return model.to(device)    
+#     return model.to(device)    
     
 def _get_train_loader(img_size, batch_size, lab_version, data_dir):
     print("Getting the data loaders...")
@@ -126,7 +126,7 @@ if __name__ == '__main__':
     valid_losses = []
     time_meter = AverageMeter()
     
-    model = ColorCNN_v0().to(device)
+    model = ColorCNN_v0(lab_version=args.lab_version).to(device)
     criterion = nn.MSELoss()
     optimizer = torch.optim.RMSprop(model.parameters(), lr=args.lr)
     
@@ -151,7 +151,8 @@ if __name__ == '__main__':
             'state_dict': model.state_dict(),
             'optimizer': optimizer.state_dict(),
             'train_losses': train_losses,
-            'valid_losses': valid_losses
+            'valid_losses': valid_losses,
+            'lab_version': args.lab_version
         }
                    
         if valid_loss < best_loss:
