@@ -4,11 +4,15 @@ import torch.nn as nn
 from dl_utils import Upsample
     
 class ColorCNN_v0(nn.Module):
-    def __init__(self):
+    def __init__(self, lab_version):
         super(ColorCNN_v0, self).__init__()
 
         self.relu = nn.ReLU()
-        self.tanh = nn.Tanh()
+        
+        if lab_version == 1:
+            self.final = nn.Tanh()
+        elif lab_version == 2:
+            self.final = nn.Sigmoid()
         
         self.upsampling = Upsample(scale_factor=2, mode='nearest')
         
@@ -44,7 +48,7 @@ class ColorCNN_v0(nn.Module):
             self.relu,
             self.upsampling,
             self.conv9,
-            self.tanh
+            self.final
         )
     
     def forward(self, x):
