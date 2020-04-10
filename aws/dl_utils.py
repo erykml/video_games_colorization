@@ -87,17 +87,17 @@ def show_model_results(model, model_name, lab_version, path, img_size, device):
         
     fig, ax = plt.subplots(1, 3, figsize = (12, 15))
 
-    imshow(test_image, ax=ax[0]) 
+    imshow(test_image_gray, ax=ax[0])
     ax[0].axis('off')
-    ax[0].set_title('RGB')
-
-    imshow(test_image_gray, ax=ax[1])
+    ax[0].set_title('Grayscale')
+    
+    imshow(color_output, ax=ax[1])
     ax[1].axis('off')
-    ax[1].set_title('Grayscale')
-
-    imshow(color_output, ax=ax[2])
+    ax[1].set_title(model_name)
+    
+    imshow(test_image, ax=ax[2]) 
     ax[2].axis('off')
-    ax[2].set_title(model_name)
+    ax[2].set_title('Ground Truth (RGB)')
 
     fig.show()
     
