@@ -56,7 +56,7 @@ def plot_losses(train_losses, valid_losses):
     
     plt.style.use('default')
 
-def save_checkpoint(state, is_best=False, filename='checkpoint.pth.tar', path=None):
+def save_checkpoint(state, is_best=False, filename=None, path=None):
     
     if path:
         if not os.path.isdir(path):
@@ -64,13 +64,13 @@ def save_checkpoint(state, is_best=False, filename='checkpoint.pth.tar', path=No
     else:
         path = ''
         
-    filename = os.path.join(path, filename)
-        
-    torch.save(state, filename)
-    
+    if filename:
+        filename = os.path.join(path, filename)
+        torch.save(state, filename)
+
     if is_best:
         best_path = os.path.join(path, 'model_best.pth.tar')
-        shutil.copyfile(filename, best_path)
+        torch.save(state, best_path)
         
 def show_model_results(model, model_name, lab_version, path, img_size, device):
     

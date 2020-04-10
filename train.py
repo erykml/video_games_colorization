@@ -36,7 +36,7 @@ def train(train_loader, model, criterion, optimizer, device):
         optimizer.step()
         
     epoch_loss = running_loss / len(train_loader.dataset)
-    return epoch_loss
+    return model, optimizer, epoch_loss
 
 def validate(valid_loader, model, criterion, save_images, gray_path, color_path, device, epoch, lab_version):
     model.eval()
@@ -68,7 +68,7 @@ def validate(valid_loader, model, criterion, save_images, gray_path, color_path,
 
     epoch_loss = running_loss / len(valid_loader.dataset)
         
-    return epoch_loss
+    return model, epoch_loss
 
 def validate_short(valid_loader, model, criterion, device):
     model.eval()
@@ -86,4 +86,4 @@ def validate_short(valid_loader, model, criterion, device):
 
     epoch_loss = running_loss / len(valid_loader.dataset)
         
-    return epoch_loss
+    return model, epoch_loss

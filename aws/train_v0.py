@@ -76,7 +76,7 @@ def _get_train_loader(img_size, batch_size, lab_version, data_dir):
 
 
 # Provided model saving functions
-def save_model(model, model_dir):
+def save_model(model, model_dir, name=''):
     print("Saving the model.")
     path = os.path.join(model_dir, 'model.pth')
     # save state dictionary
@@ -127,6 +127,7 @@ if __name__ == '__main__':
                                                    args.data_dir) 
     
     # set objects for storing metrics
+    best_loss = 1e10
     train_losses = []
     valid_losses = []
     time_meter = AverageMeter()
@@ -143,13 +144,25 @@ if __name__ == '__main__':
         start_time = time.time()
 
         # training
-        train_loss = train(train_loader, model, criterion, optimizer, device)
+        model, optimizer, train_loss = train(train_loader, model, criterion, optimizer, device)
         train_losses.append(train_loss)
 
         # validation
         with torch.no_grad():
-            valid_loss = validate_short(valid_loader, model, criterion, device)
+            model, valid_loss = validate_short(valid_loader, model, criterion, device)
             valid_losses.append(valid_loss)
+            
+        checkpoint = {
+            'epoch': epoch,
+            'state_dict': model.state_dict(),
+            'optimizer': optimizer.state_dict(),
+            'train_losses': train_losses,
+            'valid_losses': valid_losses
+        }
+            
+        if valid_loss < best_loss:
+            best_loss = valid_loss
+            save_checkpoint(checkpoint, is_best=True, path=args.model_dir)
 
         end_time = time.time()
         epoch_time = end_time - start_time
@@ -163,6 +176,6 @@ if __name__ == '__main__':
                   f'Epoch time: {epoch_time:.2f} (avg. {time_meter.avg:.2f})')
             
     # save trained model, after all epochs
-    save_model(model, args.model_dir)
+    save_checkpoint(model, filename='model_last_epoch.pth.tar', path=args.model_dir)
         
     
