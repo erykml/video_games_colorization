@@ -34,5 +34,5 @@ def get_random_file(from_dir, file_format):
     assert os.path.isdir(from_dir), 'Source directory does not exist!'
     
     file_list = glob.glob(f'{from_dir}/*.{file_format}')
-    return random.sample(file_list, 1)[0]
+    return random.choice(file_list)
     
