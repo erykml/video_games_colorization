@@ -153,7 +153,7 @@ if __name__ == '__main__':
             'train_losses': train_losses,
             'valid_losses': valid_losses
         }
-            
+                   
         if valid_loss < best_loss:
             best_loss = valid_loss
             save_checkpoint(checkpoint, is_best=True, path=args.model_dir)
