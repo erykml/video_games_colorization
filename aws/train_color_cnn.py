@@ -147,7 +147,7 @@ if __name__ == '__main__':
         epoch_time = end_time - start_time
         time_meter.update(epoch_time)
 
-        if epoch % args.print_every == (print_every - 1):
+        if epoch % args.print_every == (args.print_every - 1):
             print(f'{datetime.now().time().replace(microsecond=0)} --- '
                   f'Epoch: {epoch}\t'
                   f'Train loss: {train_loss:.4f}\t'
