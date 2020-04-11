@@ -20,14 +20,13 @@ class ColorizationImageFolder(datasets.ImageFolder):
             img_original = self.transform(img)
             img_original = np.asarray(img_original)
             
-            # convert to lab
-            img_lab = rgb2lab(img_original / 255.0)
-            
             if self.lab_version == 1:
                 # output is in range [1,1] -> tanh activation
+                img_lab = rgb2lab(img_original / 255.0)
                 img_lab = (img_lab + [0, 0, 0]) / [100, 128, 128] 
             elif self.lab_version == 2:
                 # output is in range [0,1]
+                img_lab = rgb2lab(img_original)
                 img_lab = (img_lab + [0, 128, 128]) / [100, 255, 255]
             else:
                 raise ValueError('Incorrect Lab version!!!')

@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
 from image_utils import combine_channels
-from dl_utils import AverageMeter
+from dl_utils import AverageMeter, save_checkpoint, plot_losses
 import os, time
 from datetime import datetime 
+import torch
 
 def save_temp_results(gray_input, ab_input, lab_version, save_path=None, save_name=None):
     '''

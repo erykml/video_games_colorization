@@ -102,7 +102,7 @@ def show_model_results(model, model_name, lab_version, path, img_size, device):
     fig.show()
     
 class Upsample(nn.Module):
-    def __init__(self, scale_factor, mode):
+    def __init__(self, scale_factor=2, mode='nearest'):
         super(Upsample, self).__init__()
         self.interp = nn.functional.interpolate
         self.scale_factor = scale_factor
