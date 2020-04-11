@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 from image_utils import combine_channels
+from dl_utils import AverageMeter
+import os, time
+from datetime import datetime 
 
 def save_temp_results(gray_input, ab_input, lab_version, save_path=None, save_name=None):
     '''
@@ -87,3 +90,56 @@ def validate_short(valid_loader, model, criterion, device):
     epoch_loss = running_loss / len(valid_loader.dataset)
         
     return model, epoch_loss
+
+def training_loop(model, criterion, optimizer, train_loader, valid_loader, epochs, device, save_dir, save_every, print_every):
+
+    # set objects for storing metrics
+    best_loss = 1e10
+    train_losses = []
+    valid_losses = []
+    time_meter = AverageMeter()
+
+    # Train model
+    for epoch in range(0, epochs):
+
+        start_time = time.time()
+
+        # training
+        model, optimizer, train_loss = train(train_loader, model, criterion, optimizer, device)
+        train_losses.append(train_loss)
+
+        # validation
+        with torch.no_grad():
+            model, valid_loss = validate_short(valid_loader, model, criterion, device)
+            valid_losses.append(valid_loss)
+
+        checkpoint = {
+                'epoch': epoch,
+                'state_dict': model.state_dict(),
+                'optimizer': optimizer.state_dict(),
+                'train_losses': train_losses,
+                'valid_losses': valid_losses
+        }
+
+        if epoch % save_every == (save_every - 1):
+            save_checkpoint(checkpoint, filename=f'checkpoint_epoch_{epoch}.pth.tar', path=save_dir)
+
+        # Save checkpoint and replace old best model if current model is better
+        if valid_loss < best_loss:
+            best_loss = valid_loss
+            save_checkpoint(checkpoint, is_best=True, path=save_dir)
+
+        end_time = time.time()
+        epoch_time = end_time - start_time
+        time_meter.update(epoch_time)
+
+        if epoch % print_every == (print_every - 1):
+            print(f'{datetime.now().time().replace(microsecond=0)} --- '
+                  f'Epoch: {epoch}\t'
+                  f'Train loss: {train_loss:.4f}\t'
+                  f'Valid loss: {valid_loss:.4f}\t'
+                  f'Epoch time: {epoch_time:.2f} (avg. {time_meter.avg:.2f})')
+
+    plot_losses(train_losses[1:], valid_losses[1:])
+    
+    return model, optimizer, (train_losses, valid_losses)
