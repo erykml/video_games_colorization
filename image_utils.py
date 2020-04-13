@@ -1,30 +1,43 @@
+# libraries
 import numpy as np
 import torch
-
 from skimage.color import rgb2lab, rgb2gray, lab2rgb
 from skimage.io import imread, imshow
-
 import matplotlib.pyplot as plt
 
-def preview_image(path, is_path=True):
+def preview_image(img, is_path=True):
     '''
-    Function for viewing a preview of an image
+    Function for displaying a preview of an image.
+
+    Parameters
+    ----------
+    img : str / np.ndarray
+        Path to the image or numpy array
+    is_path : boolean
+        Flag determining if the img is a path or a numpy array
     '''
     if not is_path:
-        image = path
+        image = img
     else:
-        image = imread(path)
+        image = imread(img)
     print('The size of the image is:', image.shape)
     imshow(image)
     
-def preview_lab_image(path, is_path=True):
+def preview_lab_image(img, is_path=True):
     '''
-    Function for viewing a preview of an image in the lab scale
+    Function for displaying a preview of an image in the Lab color space.
+
+    Parameters
+    ----------
+    img : str / np.ndarray
+        Path to the image or numpy array
+    is_path : boolean
+        Flag determining if the img is a path or a numpy array
     '''
     if not is_path:
-        image = path
+        image = img
     else:
-        image = imread(path)
+        image = imread(img)
     image_lab = rgb2lab(image / 255)
     image_lab = (image_lab + [0, 128, 128]) / [100, 255, 255]
     
@@ -49,6 +62,15 @@ def preview_lab_image(path, is_path=True):
     plt.show()
         
 def preview_dataloader_lab(data_loader):
+    '''
+    Function for displaying a preview of 3 images from a given PyTorch 
+    DataLoader in the Lab color space.
+
+    Parameters
+    ----------
+    data_loader : torch.utils.data.DataLoader
+        A PyTorch DataLoader from which we want to display the images
+    '''
 
     # obtain one batch of training images
     data_iter = iter(data_loader)
@@ -73,6 +95,30 @@ def preview_dataloader_lab(data_loader):
     return img_gray, img_ab
 
 def combine_channels(gray_input, ab_input, lab_version):
+    '''
+    Function for combining the grayscale and ab layers into a single Lab image 
+    and converting it back to RGB.
+
+    Two Lab versions are allowed:
+    * 1 - the output of the a/b channels is in the range of [-1,1]
+    * 2 - the output of the a/b channels is in the range of [0,1]
+
+    Parameters
+    ----------
+    gray_input : torch.tensor
+        A tensor containing the grayscale image
+    ab_input : torch.tensor
+        A tensor containing the corresponding a/b channels of a Lab image
+    lab_version : int 
+        Version of the Lab formatting used 
+
+    Returns
+    -------
+    gray_output : np.ndarray
+        The grayscale image
+    color_output : np.ndarray
+        The RGB image obtained from the Lab color space
+    '''
     
     if gray_input.is_cuda: gray_input = gray_input.cpu()
     if ab_input.is_cuda: ab_input = ab_input.cpu()
@@ -90,8 +136,7 @@ def combine_channels(gray_input, ab_input, lab_version):
         raise ValueError('Incorrect Lab version!!!')
     
     # prepare the grayscale/RGB imagers
-    color_output = lab2rgb(color_image.astype(
-        np.float64))
     gray_output = gray_input.squeeze().numpy()
+    color_output = lab2rgb(color_image.astype(np.float64))
     
     return gray_output, color_output

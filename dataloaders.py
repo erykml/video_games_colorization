@@ -9,7 +9,7 @@ class ColorizationImageFolder(datasets.ImageFolder):
     Custom ImageFolder, which additionally converts original RGB images to 
     Lab. 
 
-    Two variants are allowed:
+    Two lab versions are allowed:
     * 1 - the output of the a/b channels is in the range of [-1,1]
     * 2 - the output of the a/b channels is in the range of [0,1]
     
