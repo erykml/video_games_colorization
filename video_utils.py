@@ -1,13 +1,9 @@
-# misc
+# libraries
 import os
 import math
 import datetime
-
-# plots
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-
-# image operation
 import cv2
 
 class FrameExtractor():
@@ -28,11 +24,10 @@ class FrameExtractor():
     def get_n_images(self, every_x_frame):
         '''
         Method for calculating the expected number of images to save given 
-        we save every x-th frame
+        we save every x-th frame.
         
         Parameters
         ----------
-        
         every_x_frame : int
             Indicates we want to look at every x-th frame
         '''
@@ -41,11 +36,10 @@ class FrameExtractor():
         
     def extract_frames(self, every_x_frame, img_name, dest_path=None, img_ext = '.jpg'):
         '''
-        Method used for extracting the frames from images
+        Method used for extracting the frames from images.
         
         Parameters
         ----------
-        
         every_x_frame : int
             Indicates we want to extract every x-th frame
         img_name : str
@@ -86,7 +80,14 @@ class FrameExtractor():
         cv2.destroyAllWindows()
         
 def print_video_summary(video):
-    '''Function for printing out a summary of the video'''
+    '''
+    Function for printing out a summary of the video.
+    
+    Parameters
+    ----------
+    video : pytube.YouTube
+        An initialized object of the pytube's YouTube class
+    '''
     print('Summary:')
     print(f'Title: {video.title}')
     print(f'Duration: {video.length / 60:.2f} minutes')
