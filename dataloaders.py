@@ -1,12 +1,30 @@
+# libraries
 import torch 
 import numpy as np
-
 from torchvision import datasets
 from skimage.color import rgb2lab, lab2rgb
 
-
 class ColorizationImageFolder(datasets.ImageFolder):
-    '''Custom images folder, which converts images to grayscale before loading'''
+    '''
+    Custom ImageFolder, which additionally converts original RGB images to 
+    Lab. 
+
+    Two variants are allowed:
+    * 1 - the output of the a/b channels is in the range of [-1,1]
+    * 2 - the output of the a/b channels is in the range of [0,1]
+    
+    Parameters
+    ----------
+    lab_version : int 
+        Version of the Lab formatting used 
+
+    Returns
+    -------
+    img_gray : torch.tensor
+        4D tensor containing batches of grayscale images
+    img_ab : torch.tensor
+        4d tensor containing batches of a/b layers of the images
+    '''
     
     def __init__(self, lab_version, **kw):
         self.lab_version=lab_version
@@ -40,4 +58,4 @@ class ColorizationImageFolder(datasets.ImageFolder):
         if self.target_transform is not None:
             target = self.target_transform(target)
         
-        return img_gray, img_ab, target
+        return img_gray, img_ab
