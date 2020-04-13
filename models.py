@@ -1,8 +1,10 @@
+# libraries
 import torch 
 import torch.nn as nn
 import torchvision.models as models
-
 from dl_utils import Upsample
+
+# collection of all the models used in this project
     
 class ColorCNN_v0(nn.Module):
     def __init__(self, lab_version):
