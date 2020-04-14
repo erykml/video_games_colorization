@@ -1,12 +1,30 @@
+# libraries
 import torch 
 import numpy as np
-
 from torchvision import datasets
 from skimage.color import rgb2lab, lab2rgb
 
-
 class ColorizationImageFolder(datasets.ImageFolder):
-    '''Custom images folder, which converts images to grayscale before loading'''
+    '''
+    Custom ImageFolder, which additionally converts original RGB images to 
+    Lab. 
+
+    Two lab versions are allowed:
+    * 1 - the output of the a/b channels is in the range of [-1,1]
+    * 2 - the output of the a/b channels is in the range of [0,1]
+    
+    Parameters
+    ----------
+    lab_version : int 
+        Version of the Lab formatting used 
+
+    Returns
+    -------
+    img_gray : torch.tensor
+        4D tensor containing batches of grayscale images
+    img_ab : torch.tensor
+        4d tensor containing batches of a/b layers of the images
+    '''
     
     def __init__(self, lab_version, **kw):
         self.lab_version=lab_version
@@ -20,14 +38,13 @@ class ColorizationImageFolder(datasets.ImageFolder):
             img_original = self.transform(img)
             img_original = np.asarray(img_original)
             
-            # convert to lab
-            img_lab = rgb2lab(img_original / 255.0)
-            
             if self.lab_version == 1:
                 # output is in range [1,1] -> tanh activation
+                img_lab = rgb2lab(img_original / 255.0)
                 img_lab = (img_lab + [0, 0, 0]) / [100, 128, 128] 
             elif self.lab_version == 2:
                 # output is in range [0,1]
+                img_lab = rgb2lab(img_original)
                 img_lab = (img_lab + [0, 128, 128]) / [100, 255, 255]
             else:
                 raise ValueError('Incorrect Lab version!!!')

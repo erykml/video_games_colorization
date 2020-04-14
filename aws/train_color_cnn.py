@@ -1,3 +1,4 @@
+# libraries
 from __future__ import print_function # future proof
 import argparse
 import sys
@@ -5,18 +6,15 @@ import os
 import json
 import time
 from datetime import datetime 
-
-# pytorch
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data
+from torchvision import datasets, transforms
 
 from dl_utils import *
 from train import *
 from models import *
-
-from torchvision import datasets, transforms
 from dataloaders import ColorizationImageFolder
         
 def _get_train_loader(img_size, batch_size, lab_version, data_dir):
@@ -77,10 +75,12 @@ if __name__ == '__main__':
                         help='seed (default: 42)')
     parser.add_argument('--img-size', type=int, default=224, metavar='N',
                         help='terget image size (default: 224)')
-    parser.add_argument('--model-version', type=int, metavar='N',
-                        help='Version of the model to train, int')
+    parser.add_argument('--model-version', type=str, metavar='N',
+                        help='Version of the model to train, str')
     parser.add_argument('--print-every', type=int, default=1, metavar='N',
                         help='Print epoch summary every x epochs')
+    parser.add_argument('--save-every', type=int, default=5, metavar='N',
+                        help='Save a checkpoint after every x epochs.')
     
     args = parser.parse_args()
 
@@ -101,11 +101,17 @@ if __name__ == '__main__':
     time_meter = AverageMeter()
     
     # model setup 
-    if args.model_version == 0:
+    if args.model_version == 'ColorCNN_v0':
         model = ColorCNN_v0(lab_version=args.lab_version).to(device)
         optimizer = torch.optim.RMSprop(model.parameters(), lr=args.lr)
-    elif args.model_version == 1:
+    elif args.model_version == ColorCNN_v1:
         model = ColorCNN_v1(lab_version=args.lab_version).to(device)
+        optimizer = torch.optim.RMSprop(model.parameters(), lr=args.lr)
+    elif args.model_version == ColorCNN_v1_small:
+        model = ColorCNN_v1_small(lab_version=args.lab_version).to(device)
+        optimizer = torch.optim.RMSprop(model.parameters(), lr=args.lr)
+    elif args.model_version == ColorCNN_v2:
+        model = ColorCNN_v2(lab_version=args.lab_version).to(device)
         optimizer = torch.optim.RMSprop(model.parameters(), lr=args.lr)
     else:
         raise ValueError('Incorrect model version!!!')
@@ -137,6 +143,11 @@ if __name__ == '__main__':
             'lab_version': args.lab_version,
             'model_version': args.model_version
         }
+        
+        if epoch % args.save_every == (args.save_every - 1):
+            save_checkpoint(checkpoint, 
+                            filename=f'checkpoint_epoch_{epoch}.pth.tar', 
+                            path=args.model_dir)
                    
         if valid_loss < best_loss:
             best_loss = valid_loss
