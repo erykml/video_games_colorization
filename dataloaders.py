@@ -58,4 +58,4 @@ class ColorizationImageFolder(datasets.ImageFolder):
         if self.target_transform is not None:
             target = self.target_transform(target)
         
-        return img_gray, img_ab
+        return img_gray, img_ab, target
