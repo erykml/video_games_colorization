@@ -104,13 +104,13 @@ if __name__ == '__main__':
     if args.model_version == 'ColorCNN_v0':
         model = ColorCNN_v0(lab_version=args.lab_version).to(device)
         optimizer = torch.optim.RMSprop(model.parameters(), lr=args.lr)
-    elif args.model_version == ColorCNN_v1:
+    elif args.model_version == 'ColorCNN_v1':
         model = ColorCNN_v1(lab_version=args.lab_version).to(device)
         optimizer = torch.optim.RMSprop(model.parameters(), lr=args.lr)
-    elif args.model_version == ColorCNN_v1_small:
+    elif args.model_version == 'ColorCNN_v1_small':
         model = ColorCNN_v1_small(lab_version=args.lab_version).to(device)
         optimizer = torch.optim.RMSprop(model.parameters(), lr=args.lr)
-    elif args.model_version == ColorCNN_v2:
+    elif args.model_version == 'ColorCNN_v2':
         model = ColorCNN_v2(lab_version=args.lab_version).to(device)
         optimizer = torch.optim.RMSprop(model.parameters(), lr=args.lr)
     else:
