@@ -106,6 +106,28 @@ def save_checkpoint(state, is_best=False, filename=None, path=None):
         best_path = os.path.join(path, 'model_best.pth.tar')
         torch.save(state, best_path)
         
+class Upsample(nn.Module):
+    '''
+    A class used for non-learnable upsampling of the images.
+    For details please see the documentation of `nn.functional.interpolate`
+
+    Parameters
+    ----------
+    scale_factor : int
+        The scale for upsampling, default = 2
+    mode : str
+        The mode of upsampling, default = 'nearest'
+    '''
+    def __init__(self, scale_factor=2, mode='nearest'):
+        super(Upsample, self).__init__()
+        self.interp = nn.functional.interpolate
+        self.scale_factor = scale_factor
+        self.mode = mode
+        
+    def forward(self, x):
+        x = self.interp(x, scale_factor=self.scale_factor, mode=self.mode)
+        return x
+        
 def show_model_results(model, model_name, lab_version, path, img_size, device):
     '''
     Function for displaying the colorization done by the model. Displays the 
@@ -113,7 +135,7 @@ def show_model_results(model, model_name, lab_version, path, img_size, device):
 
     Parameters
     ----------
-    model : 
+    model : PyTorch model from nn.Module
         The trained NN
     model_name : str 
         The name we want to display above the colorized image
@@ -155,25 +177,54 @@ def show_model_results(model, model_name, lab_version, path, img_size, device):
     ax[2].set_title('Ground Truth (RGB)')
 
     fig.show()
-    
-class Upsample(nn.Module):
+
+def compare_colorization(model_list, model_names, lab_version, path, img_size, device, save_dir=None):
     '''
-    A class used for non-learnable upsampling of the images.
-    For details please see the documentation of `nn.functional.interpolate`
+    Function for displaying the colorization done by various models. Displays n+1 images, 
+    where n is len(model_list). The extra image is the original RGB image.
 
     Parameters
     ----------
-    scale_factor : int
-        The scale for upsampling, default = 2
-    mode : str
-        The mode of upsampling, default = 'nearest'
+    model_list : list
+        List of trained PyTorch models
+    model_names : list 
+        List of model names
+    lab_version : int
+        The variant of the lab scaling, see `combine_channels` for more details 
+    path : str
+        Path to the image to display 
+    img_size : int
+        Image size for potential resizing, must be the same one as used for training the model
+    device : str
+        String containing the device, one of ['cpu', 'cuda']
     '''
-    def __init__(self, scale_factor=2, mode='nearest'):
-        super(Upsample, self).__init__()
-        self.interp = nn.functional.interpolate
-        self.scale_factor = scale_factor
-        self.mode = mode
+    
+    assert device in ['cpu', 'cuda'], 'Invalid device!'
+
+    test_image = imread(path)
+    test_image = resize(test_image, (img_size, img_size))
+    test_image_gray = rgb2gray(test_image)
+    
+    gray_tensor = torch.from_numpy(test_image_gray).unsqueeze(0).unsqueeze(0).float().to(device)
+    
+    fig, ax = plt.subplots(1, 4, figsize = (12, 16))
+    
+    imshow(test_image, ax=ax[0])
+    ax[0].axis('off')
+    ax[0].set_title('RGB')
+    
+
+    with torch.no_grad():
         
-    def forward(self, x):
-        x = self.interp(x, scale_factor=self.scale_factor, mode=self.mode)
-        return x
+        for loc, model in enumerate(model_list, 1):
+            ab_tensor = model(gray_tensor)
+            _, color_output = combine_channels(gray_tensor[0], ab_tensor[0], lab_version)
+        
+            imshow(color_output, ax=ax[loc])
+            ax[loc].axis('off')
+            ax[loc].set_title(model_names[loc-1])
+
+    if save_dir:
+        os.makedirs(to_dir, exist_ok=True)
+    
+    fig.show()
