@@ -31,11 +31,11 @@ The rest of the Notebooks were used experimentation and contain a brief descript
 **Results**
 Below I present some of the results. for a description of the models, please refer to `project_report.pdf`.
 
-![img1](img/wario_land_3_img_100.png)
-![img2](img/wario_land_3_img_889.png)
-![img3](img/wario_land_3_img_1241.png)
-![img4](img/wario_land_3_img_3894.png)
-![img5](img/wario_land_3_img_7633.png)
+![img1](img/results/wario_land_3_img_100.png)
+![img2](img/results/wario_land_3_img_889.png)
+![img3](img/results/wario_land_3_img_1241.png)
+![img4](img/results/wario_land_3_img_3894.png)
+![img5](img/results/wario_land_3_img_7633.png)
 
 **Requirements**
 The entire project was carried out in Python (3.6), while training of the convolutional autoencoders was done in PyTorch (1.4). `requirements.txt` contains most of the dependencies required for the project.
