@@ -207,7 +207,7 @@ def compare_colorization(model_list, model_names, lab_version, path, img_size, d
     
     gray_tensor = torch.from_numpy(test_image_gray).unsqueeze(0).unsqueeze(0).float().to(device)
     
-    fig, ax = plt.subplots(1, 4, figsize = (12, 16))
+    fig, ax = plt.subplots(1, 4, figsize = (6, 8))
     
     imshow(test_image, ax=ax[0])
     ax[0].axis('off')
@@ -225,6 +225,10 @@ def compare_colorization(model_list, model_names, lab_version, path, img_size, d
             ax[loc].set_title(model_names[loc-1])
 
     if save_dir:
-        os.makedirs(to_dir, exist_ok=True)
+        os.makedirs(save_dir, exist_ok=True)
+        plt.tight_layout()
+        fig.savefig(os.path.join(save_dir, path.split('/')[-1]), 
+                    format='jpg', 
+                    dpi=300)
     
     fig.show()
