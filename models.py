@@ -185,7 +185,7 @@ class ColorCNN_v2(nn.Module):
         elif lab_version == 2:
             self.final = nn.ReLU()
             
-        ## First half: ResNet
+        ## ResNet
         resnet = models.resnet18(num_classes=365) 
         # Change first conv layer to accept single-channel (grayscale) input
         resnet.conv1.weight = nn.Parameter(resnet.conv1.weight.sum(dim=1).unsqueeze(1)) 
@@ -194,31 +194,36 @@ class ColorCNN_v2(nn.Module):
         
         self.upsampling = Upsample(scale_factor=2, mode='nearest')
 
-        ## Second half: Upsampling
+        ## Upsampling and colorization
         self.upsample = nn.Sequential(     
-            nn.Conv2d(MIDLEVEL_FEATURE_SIZE, 128, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(in_channels=MIDLEVEL_FEATURE_SIZE,
+                      out_channels=128, kernel_size=(3, 3), stride=1, padding=1),
             nn.BatchNorm2d(128),
             nn.ReLU(),
             self.upsampling,
-            nn.Conv2d(128, 64, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(in_channels=128, out_channels=64,
+                      kernel_size=(3, 3), stride=1, padding=1),
             nn.BatchNorm2d(64),
             nn.ReLU(),
-            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(in_channels=64, out_channels=64,
+                      kernel_size=(3, 3), stride=1, padding=1),
             nn.BatchNorm2d(64),
             nn.ReLU(),
             self.upsampling,
-            nn.Conv2d(64, 32, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(in_channels=64, out_channels=32,
+                      kernel_size=(3, 3), stride=1, padding=1),
             nn.BatchNorm2d(32),
             self.final,
-            nn.Conv2d(32, 2, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(in_channels=32, out_channels=2,
+                      kernel_size=(3, 3), stride=1, padding=1),
             self.upsampling
         )
 
     def forward(self, input):
 
-        # Pass input through ResNet-gray to extract features
+        # ResNet - feature extraction
         midlevel_features = self.midlevel_resnet(input)
 
-        # Upsample to get colors
+        # Upsampling and colorization
         output = self.upsample(midlevel_features)
         return output
