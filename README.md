@@ -32,7 +32,7 @@ The rest of the Notebooks were used experimentation and contain a brief descript
 
 **Results**
 
-Below I present some of the results. for a description of the models, please refer to `project_report.pdf`. There, I also briefly describe the results.
+Below I present some of the results. for a description of the models, please refer to `capstone_report.pdf`. There, I also briefly describe the results.
 
 ![img1](img/results/img1.png)
 ![img2](img/results/img2.png)
