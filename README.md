@@ -3,11 +3,13 @@
 This repository contains the documentation of my capstone project for **Udacity's Machine Learning Engineer Nanodegree**.
 
 **Project Overview**
+
 The problem I would like to tackle in this project is quite simple – to colorize grayscale images coming from old-school video games. To do so, I use Deep Learning, in particular, autoencoders based on Convolutional Neural Networks, also known as convolutional autoencoders. 
 
 I use a self-gathered dataset of images coming from a Game Boy Color video game called *Wario Land 3*. Using the provided functions and classes the data set can easily be expanded to include more than one game.
 
 **Structure**
+
 The project was divided into a few steps and I tried to keep them in separate files/Notebooks:
 
 Notebooks:
@@ -29,15 +31,17 @@ The rest of the Notebooks were used experimentation and contain a brief descript
 * `train.py` - contains convenience functions for training and validation of the models
 
 **Results**
-Below I present some of the results. for a description of the models, please refer to `project_report.pdf`.
 
-![img1](img/results/wario_land_3_img_100.png)
-![img2](img/results/wario_land_3_img_889.png)
-![img3](img/results/wario_land_3_img_1241.png)
-![img4](img/results/wario_land_3_img_3894.png)
-![img5](img/results/wario_land_3_img_7633.png)
+Below I present some of the results. for a description of the models, please refer to `project_report.pdf`. There, I also briefly describe the results.
+
+![img1](img/results/img1.png)
+![img2](img/results/img2.png)
+![img3](img/results/img3.png)
+![img4](img/results/img4.png)
+![img5](img/results/img5.png)
 
 **Requirements**
+
 The entire project was carried out in Python (3.6), while training of the convolutional autoencoders was done in PyTorch (1.4). `requirements.txt` contains most of the dependencies required for the project.
 
 The project involved training the NNs using AWS. However, all models can also be trained locally or using Google Colab.
