@@ -140,3 +140,19 @@ def combine_channels(gray_input, ab_input, lab_version):
     color_output = lab2rgb(color_image.astype(np.float64))
     
     return gray_output, color_output
+
+def print_image_summary(image, labels):
+    
+    print('--------------')
+    print('Image Details:')
+    print('--------------')
+    print(f'Image dimensions: {image.shape}')
+    print('Channels:')
+    
+    if len(labels) == 1:
+        image = image[..., np.newaxis]
+        
+    for i, lab in enumerate(labels):
+        min_val = np.min(image[:,:,i])
+        max_val = np.max(image[:,:,i])
+        print(f'{lab} : min={min_val:.4f}, max={max_val:.4f}')
