@@ -40,6 +40,14 @@ Below I present some of the results. for a description of the models, please ref
 ![img4](img/results/img4.png)
 ![img5](img/results/img5.png)
 
+Additionally, I applied the models trained on *Wario Land 3* to the preceding installment od the Wario series - *Wario Land 2*. You can see the results below.
+
+![img6](img/wario_land_2/wario_land_2_img_6.jpg)
+![img7](img/wario_land_2/wario_land_2_img_72.jpg)
+![img8](img/wario_land_2/wario_land_2_img_75.jpg)
+![img9](img/wario_land_2/wario_land_2_img_84.jpg)
+![img10](img/wario_land_2/wario_land_2_img_145.jpg)
+
 **Requirements**
 
 The entire project was carried out in Python (3.6), while training of the convolutional autoencoders was done in PyTorch (1.4). `requirements.txt` contains most of the dependencies required for the project.

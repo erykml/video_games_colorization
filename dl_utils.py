@@ -229,6 +229,7 @@ def compare_colorization(model_list, model_names, lab_version, path, img_size, d
         plt.tight_layout()
         fig.savefig(os.path.join(save_dir, path.split('/')[-1]), 
                     format='jpg', 
-                    dpi=300)
+                    dpi=300, 
+                    bbox_inches='tight')
     
     fig.show()
