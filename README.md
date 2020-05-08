@@ -2,6 +2,8 @@
 
 This repository contains the documentation of my capstone project for **Udacity's Machine Learning Engineer Nanodegree**.
 
+You can also read about the project in my [Medium blog post](https://towardsdatascience.com/image-colorization-using-convolutional-autoencoders-fdabc1cb1dbe).
+
 **Project Overview**
 
 The problem I would like to tackle in this project is quite simple – to colorize grayscale images coming from old-school video games. To do so, I use Deep Learning, in particular, autoencoders based on Convolutional Neural Networks, also known as convolutional autoencoders. 
